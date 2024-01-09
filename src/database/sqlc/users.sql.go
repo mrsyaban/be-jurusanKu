@@ -9,7 +9,7 @@ import (
 	"context"
 )
 
-const createUser = `-- name: createUser :one
+const createUser = `-- name: CreateUser :one
 INSERT INTO users (
     username,
     password,
@@ -21,7 +21,7 @@ INSERT INTO users (
 ) RETURNING id, username, password, role, created_at
 `
 
-func (q *Queries) createUser(ctx context.Context) (Users, error) {
+func (q *Queries) CreateUser(ctx context.Context) (Users, error) {
 	row := q.db.QueryRowContext(ctx, createUser)
 	var i Users
 	err := row.Scan(
