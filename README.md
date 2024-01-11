@@ -5,10 +5,10 @@
 
 > part of Rakuten Team (Hackfest 2024)
 
-<p align="center">
-<img src="https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54">
-<img src="https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white">
-<img src="https://img.shields.io/badge/Line-00C300?style=for-the-badge&logo=line&logoColor=white">
+<p align="center"> 
+  <img src="https://img.shields.io/badge/-Go-333333?style=flat-square&logo=Go">
+  <img src="https://img.shields.io/badge/-Docker-333333?style=flat-square&logo=docker"/>
+  <img src="https://img.shields.io/badge/-PostgreSQL-333333?style=flat-square&logo=postgresql">
 </p>
 
 ## Table of Contents
