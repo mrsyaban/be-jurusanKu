@@ -1,9 +1,9 @@
 CREATE TABLE users (
   "id" bigserial PRIMARY KEY,
-  "username" varchar NOT NULL,
+  "username" varchar NOT NULL UNIQUE,
   "password" varchar NOT NULL,
   "role" varchar NOT NULL,
-  "created_at" timestamp NOT NULL
+  "created_at" timestamp NOT NULL DEFAULT (now())
 );
 
 CREATE TABLE majors (
@@ -14,8 +14,9 @@ CREATE TABLE majors (
 
 CREATE TABLE courses (
   "id" bigserial PRIMARY KEY,
-  "major_id" integer NOT NULL,
-  "desc" varchar NOT NULL
+  "title" varchar NOT NULL,
+  "desc" varchar NOT NULL,
+  "major_id" integer NOT NULL
 );
 
 ALTER TABLE "courses" ADD FOREIGN KEY ("major_id") REFERENCES "majors" ("id");

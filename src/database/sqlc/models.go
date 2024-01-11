@@ -10,8 +10,9 @@ import (
 
 type Courses struct {
 	ID      int64  `json:"id"`
-	MajorID int32  `json:"major_id"`
+	Title   string `json:"title"`
 	Desc    string `json:"desc"`
+	MajorID int32  `json:"major_id"`
 }
 
 type Majors struct {

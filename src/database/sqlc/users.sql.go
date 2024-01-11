@@ -9,20 +9,68 @@ import (
 	"context"
 )
 
-const createUser = `-- name: createUser :one
+const createDummyUser = `-- name: CreateDummyUser :one
 INSERT INTO users (
     username,
     password,
     role
 ) VALUES (
-    'admin',
+    'adminDummy',
     'password',
     'admin'
 ) RETURNING id, username, password, role, created_at
 `
 
-func (q *Queries) createUser(ctx context.Context) (Users, error) {
-	row := q.db.QueryRowContext(ctx, createUser)
+func (q *Queries) CreateDummyUser(ctx context.Context) (Users, error) {
+	row := q.db.QueryRowContext(ctx, createDummyUser)
+	var i Users
+	err := row.Scan(
+		&i.ID,
+		&i.Username,
+		&i.Password,
+		&i.Role,
+		&i.CreatedAt,
+	)
+	return i, err
+}
+
+const getUserByUsername = `-- name: GetUserByUsername :one
+SELECT id, username, password, role, created_at FROM users WHERE username = $1
+`
+
+func (q *Queries) GetUserByUsername(ctx context.Context, username string) (Users, error) {
+	row := q.db.QueryRowContext(ctx, getUserByUsername, username)
+	var i Users
+	err := row.Scan(
+		&i.ID,
+		&i.Username,
+		&i.Password,
+		&i.Role,
+		&i.CreatedAt,
+	)
+	return i, err
+}
+
+const registerUser = `-- name: RegisterUser :one
+INSERT INTO users (
+    username,
+    password,
+    role
+) VALUES (
+    $1,
+    $2,
+    $3
+) RETURNING id, username, password, role, created_at
+`
+
+type RegisterUserParams struct {
+	Username string `json:"username"`
+	Password string `json:"password"`
+	Role     string `json:"role"`
+}
+
+func (q *Queries) RegisterUser(ctx context.Context, arg RegisterUserParams) (Users, error) {
+	row := q.db.QueryRowContext(ctx, registerUser, arg.Username, arg.Password, arg.Role)
 	var i Users
 	err := row.Scan(
 		&i.ID,
