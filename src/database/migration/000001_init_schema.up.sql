@@ -1,9 +1,9 @@
 CREATE TABLE users (
   "id" bigserial PRIMARY KEY,
-  "username" varchar NOT NULL,
+  "username" varchar NOT NULL UNIQUE,
   "password" varchar NOT NULL,
   "role" varchar NOT NULL,
-  "created_at" timestamp NOT NULL
+  "created_at" timestamp NOT NULL DEFAULT (now())
 );
 
 CREATE TABLE majors (
