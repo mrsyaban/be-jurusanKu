@@ -1,0 +1,91 @@
+package api
+
+import (
+	"JurusanKu/src/config"
+	db "JurusanKu/src/database/sqlc"
+	"strings"
+	"log"
+	"net/http"
+
+	"github.com/gin-gonic/gin"
+	"golang.org/x/crypto/bcrypt"
+)
+
+type register struct {
+	Username string `form:"username" binding:"required"`
+	Password string `form:"password" binding:"required"`
+	Role string `form:"role" binding:"required"`
+}
+
+func (server *Server) Register(ctx *gin.Context) {
+	// get request body
+	var req register
+	if err := ctx.ShouldBind(&req); err != nil {
+		ctx.JSON(400, gin.H{"error": err.Error()})
+		return
+	}
+
+	// hash password
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(req.Password), bcrypt.DefaultCost)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	// register user
+	args := db.RegisterUserParams{
+		Username: req.Username,
+		Password: string(hashedPassword),
+		Role: req.Role,
+	}
+
+	newUser, err := server.store.RegisterUser(ctx, args)
+	if err != nil {
+		if strings.Contains(err.Error(), "duplicate key value violates")  {
+			ctx.JSON(http.StatusConflict, gin.H{"error": "username already exists"})
+			return
+		}
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	ctx.JSON(http.StatusOK, newUser.CreatedAt)
+}
+
+type login struct {
+	Username string `form:"username" binding:"required"`
+	Password string `form:"password" binding:"required"`
+}
+
+func (server *Server) Login(ctx *gin.Context) {
+	// get request body
+	var req login
+	if err := ctx.ShouldBind(&req); err != nil {
+		ctx.JSON(400, gin.H{"error": err.Error()})
+		return
+	}
+
+	// get user
+	user, err := server.store.GetUserByUsername(ctx, req.Username)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "invalid username"})
+		return
+	}
+
+	// compare password
+	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(req.Password))
+	if err != nil {
+		ctx.JSON(http.StatusUnauthorized, gin.H{"error": "invalid password"})
+		return
+	}
+
+	// generate token
+	token, payload, err := config.CreateToken(user.Username, user.Role, server.config.JWT_EXP, server.config.JWT_KEY)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	
+	ctx.SetCookie("token", token, 3600, "/", "localhost", false, true)
+	log.Println(ctx.Cookie("token"))
+	ctx.JSON(http.StatusOK, payload)
+}
