@@ -80,7 +80,7 @@ Project is: _on development_
 
 <a name="contact"></a>
 
-## Contact
+## 
 <h4 align="center">
   Created by @Rakuten<br/>
   2024
