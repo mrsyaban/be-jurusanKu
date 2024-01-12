@@ -13,6 +13,7 @@ CREATE TABLE "majors" (
   "id" bigserial PRIMARY KEY,
   "title" varchar NOT NULL,
   "desc" varchar NOT NULL,
+  "image_url" varchar NOT NULL,
   "interest_num" integer NOT NULL DEFAULT 0
 );
 
@@ -21,13 +22,16 @@ CREATE TABLE "courses" (
   "title" varchar NOT NULL,
   "desc" varchar NOT NULL,
   "major_id" bigserial NOT NULL,
-  "price" integer,
-  "syllabus" text
+  "image_url" varchar NOT NULL,
+  "price" integer NOT NULL,
+  "syllabus" text NOT NULL
 );
 
 CREATE TABLE "projects" (
   "id" bigserial PRIMARY KEY,
-  "course_id" bigserial NOT NULL
+  "course_id" bigserial NOT NULL,
+  "image_url" varchar NOT NULL,
+  "content_url" varchar NOT NULL
 );
 
 CREATE TABLE "enrollment" (

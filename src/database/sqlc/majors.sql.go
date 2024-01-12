@@ -13,12 +13,14 @@ const createDummyMajor = `-- name: CreateDummyMajor :many
 INSERT INTO majors (
     title,
     "desc",
-    "interest_num"
+    "interest_num",
+    image_url
 ) VALUES (
     'Teknik Informatika',
     'The study of computers and their applications',
-    1100
-) RETURNING id, title, "desc", interest_num
+    1100,
+    'https://sample.dummy'
+) RETURNING id, title, "desc", image_url, interest_num
 `
 
 func (q *Queries) CreateDummyMajor(ctx context.Context) ([]Majors, error) {
@@ -34,6 +36,7 @@ func (q *Queries) CreateDummyMajor(ctx context.Context) ([]Majors, error) {
 			&i.ID,
 			&i.Title,
 			&i.Desc,
+			&i.ImageUrl,
 			&i.InterestNum,
 		); err != nil {
 			return nil, err
@@ -50,7 +53,7 @@ func (q *Queries) CreateDummyMajor(ctx context.Context) ([]Majors, error) {
 }
 
 const getMajors = `-- name: GetMajors :many
-SELECT id, title, "desc", interest_num FROM majors
+SELECT id, title, "desc", image_url, interest_num FROM majors
 `
 
 func (q *Queries) GetMajors(ctx context.Context) ([]Majors, error) {
@@ -66,6 +69,7 @@ func (q *Queries) GetMajors(ctx context.Context) ([]Majors, error) {
 			&i.ID,
 			&i.Title,
 			&i.Desc,
+			&i.ImageUrl,
 			&i.InterestNum,
 		); err != nil {
 			return nil, err
