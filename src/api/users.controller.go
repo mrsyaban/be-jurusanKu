@@ -12,16 +12,17 @@ import (
 )
 
 type register struct {
-	Username string `form:"username" binding:"required"`
+	Email string `form:"email" binding:"required"`
 	Password string `form:"password" binding:"required"`
 	Role string `form:"role" binding:"required"`
+	Name string `form:"name" binding:"required"`
 }
 
 func (server *Server) Register(ctx *gin.Context) {
 	// get request body
 	var req register
 	if err := ctx.ShouldBind(&req); err != nil {
-		ctx.JSON(400, gin.H{"error": err.Error()})
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -34,9 +35,10 @@ func (server *Server) Register(ctx *gin.Context) {
 
 	// register user
 	args := db.RegisterUserParams{
-		Username: req.Username,
+		Email: req.Email,
 		Password: string(hashedPassword),
 		Role: req.Role,
+		Name: req.Name,
 	}
 
 	newUser, err := server.store.RegisterUser(ctx, args)
@@ -52,7 +54,7 @@ func (server *Server) Register(ctx *gin.Context) {
 }
 
 type login struct {
-	Username string `form:"username" binding:"required"`
+	Email string `form:"email" binding:"required"`
 	Password string `form:"password" binding:"required"`
 }
 
@@ -60,12 +62,12 @@ func (server *Server) Login(ctx *gin.Context) {
 	// get request body
 	var req login
 	if err := ctx.ShouldBind(&req); err != nil {
-		ctx.JSON(400, gin.H{"error": err.Error()})
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
 	// get user
-	user, err := server.store.GetUserByUsername(ctx, req.Username)
+	user, err := server.store.GetUserByEmail(ctx, req.Email)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "invalid username"})
 		return
@@ -79,7 +81,7 @@ func (server *Server) Login(ctx *gin.Context) {
 	}
 
 	// generate token
-	token, payload, err := config.CreateToken(user.Username, user.Role, server.config.JWT_EXP, server.config.JWT_KEY)
+	token, payload, err := config.CreateToken(user.Email, user.Role, server.config.JWT_EXP, server.config.JWT_KEY)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -88,4 +90,50 @@ func (server *Server) Login(ctx *gin.Context) {
 	ctx.SetCookie("token", token, 3600, "/", "localhost", false, true)
 	log.Println(ctx.Cookie("token"))
 	ctx.JSON(http.StatusOK, payload)
+}
+
+type getProfileRequest struct {
+	Email string `form:"email" binding:"required"`
+}
+
+func (server *Server) getProfile(ctx *gin.Context) {
+	var req getProfileRequest
+	if err := ctx.ShouldBind(&req); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	user, err := server.store.GetUserByEmail(ctx, req.Email)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	ctx.JSON(http.StatusOK, user)
+}
+
+type updateProfileRequest struct {
+	Email string `form:"email" binding:"required"`
+	Name string `form:"name" binding:"required"`
+	Nick string `form:"nick" binding:"required"`
+}
+
+func (server *Server) updateProfile(ctx *gin.Context) {
+	var req updateProfileRequest
+	if err := ctx.ShouldBind(&req); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	args := db.UpdateProfileParams{
+		Name: req.Name,
+		Nick: req.Nick,
+		Email: req.Email,
+	}
+
+	user, err := server.store.UpdateProfile(ctx, args)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "failed to update profile"})
+		return
+	}
+	ctx.JSON(http.StatusOK, user)
 }

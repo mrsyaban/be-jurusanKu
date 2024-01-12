@@ -13,12 +13,18 @@ const createCourse = `-- name: CreateCourse :one
 INSERT INTO courses (
     title,
     "desc",
-    "major_id"
+    "major_id",
+    price,
+    syllabus,
+    image_url
 ) VALUES (
     'Computer Science',
     'The study of computers and their applications',
-    1
-) RETURNING id, title, "desc", major_id
+    1,
+    0,
+    'week 1: introduction to computer science',
+    'https://sample.dummy'
+) RETURNING id, title, "desc", major_id, image_url, price, syllabus
 `
 
 func (q *Queries) CreateCourse(ctx context.Context) (Courses, error) {
@@ -29,28 +35,42 @@ func (q *Queries) CreateCourse(ctx context.Context) (Courses, error) {
 		&i.Title,
 		&i.Desc,
 		&i.MajorID,
+		&i.ImageUrl,
+		&i.Price,
+		&i.Syllabus,
 	)
 	return i, err
 }
 
 const getCourseByMajorId = `-- name: GetCourseByMajorId :one
-SELECT id, title, "desc", major_id FROM courses WHERE major_id = $1
+SELECT id, title, "desc", major_id, price 
+FROM courses 
+WHERE major_id = $1
 `
 
-func (q *Queries) GetCourseByMajorId(ctx context.Context, majorID int32) (Courses, error) {
+type GetCourseByMajorIdRow struct {
+	ID      int64  `json:"id"`
+	Title   string `json:"title"`
+	Desc    string `json:"desc"`
+	MajorID int64  `json:"major_id"`
+	Price   int32  `json:"price"`
+}
+
+func (q *Queries) GetCourseByMajorId(ctx context.Context, majorID int64) (GetCourseByMajorIdRow, error) {
 	row := q.db.QueryRowContext(ctx, getCourseByMajorId, majorID)
-	var i Courses
+	var i GetCourseByMajorIdRow
 	err := row.Scan(
 		&i.ID,
 		&i.Title,
 		&i.Desc,
 		&i.MajorID,
+		&i.Price,
 	)
 	return i, err
 }
 
 const getCourses = `-- name: GetCourses :many
-SELECT id, title, "desc", major_id FROM courses
+SELECT id, title, "desc", major_id, image_url, price, syllabus FROM courses
 `
 
 func (q *Queries) GetCourses(ctx context.Context) ([]Courses, error) {
@@ -67,6 +87,9 @@ func (q *Queries) GetCourses(ctx context.Context) ([]Courses, error) {
 			&i.Title,
 			&i.Desc,
 			&i.MajorID,
+			&i.ImageUrl,
+			&i.Price,
+			&i.Syllabus,
 		); err != nil {
 			return nil, err
 		}
@@ -79,4 +102,17 @@ func (q *Queries) GetCourses(ctx context.Context) ([]Courses, error) {
 		return nil, err
 	}
 	return items, nil
+}
+
+const getSyllabusByCourseId = `-- name: GetSyllabusByCourseId :one
+SELECT syllabus
+FROM courses
+WHERE id = $1
+`
+
+func (q *Queries) GetSyllabusByCourseId(ctx context.Context, courseID int64) (string, error) {
+	row := q.db.QueryRowContext(ctx, getSyllabusByCourseId, courseID)
+	var syllabus string
+	err := row.Scan(&syllabus)
+	return syllabus, err
 }
