@@ -1,0 +1,305 @@
+{
+	"info": {
+		"_postman_id": "cc178fc2-9138-4abf-a410-958038a17a56",
+		"name": "jurusanKu",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "28398975"
+	},
+	"item": [
+		{
+			"name": "dummy",
+			"item": [
+				{
+					"name": "seed",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": "{{base_url}}/dummy/create/major"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "user",
+			"item": [
+				{
+					"name": "register",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "email",
+									"value": "admin@gmail.com",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "secret",
+									"type": "text"
+								},
+								{
+									"key": "role",
+									"value": "student",
+									"type": "text"
+								},
+								{
+									"key": "name",
+									"value": "admin",
+									"type": "text"
+								}
+							]
+						},
+						"url": "{{base_url}}/register"
+					},
+					"response": []
+				},
+				{
+					"name": "login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "username",
+									"value": "admin",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "secret",
+									"type": "text"
+								}
+							]
+						},
+						"url": "{{base_url}}/login"
+					},
+					"response": []
+				},
+				{
+					"name": "update profile",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "email",
+									"value": "admin@gmail.com",
+									"type": "text"
+								},
+								{
+									"key": "name",
+									"value": "Admin Jurusanku",
+									"type": "text"
+								},
+								{
+									"key": "nick",
+									"value": "admin",
+									"type": "text"
+								}
+							]
+						},
+						"url": "{{base_url}}/profile/update"
+					},
+					"response": []
+				},
+				{
+					"name": "active course",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/course/active/:email",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"course",
+								"active",
+								":email"
+							],
+							"variable": [
+								{
+									"key": "email",
+									"value": "admin@gmail.com"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get profile",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "course",
+			"item": [
+				{
+					"name": "syllabus",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/course/syllabus/:courseId",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"course",
+								"syllabus",
+								":courseId"
+							],
+							"variable": [
+								{
+									"key": "courseId",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "project",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/course/project/:courseId",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"course",
+								"project",
+								":courseId"
+							],
+							"variable": [
+								{
+									"key": "courseId",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "material",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/course/material/:courseId",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"course",
+								"material",
+								":courseId"
+							],
+							"variable": [
+								{
+									"key": "courseId",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "enroll",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "email",
+									"value": "admin@gmail.com",
+									"type": "text"
+								},
+								{
+									"key": "course_id",
+									"value": "",
+									"type": "text"
+								}
+							]
+						},
+						"url": "{{base_url}}/enroll"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "major",
+			"item": [
+				{
+					"name": "course by major id",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "get all majors",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": "{{base_url}}/majors"
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8080",
+			"type": "string"
+		}
+	]
+}
