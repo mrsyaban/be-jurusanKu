@@ -76,7 +76,7 @@ make server
 
 <a name="documentation"> </a>
 ## Documentation
-[postman collection](docs\jurusanKu.postman_collection.json)
+[postman collection](docs/jurusanKu.postman_collection.json)
 
 <a name="project-status"> </a>
 
