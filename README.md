@@ -18,8 +18,9 @@
 - [Technologies Used](#technologies-used)
 - [Setup](#setup)
 - [Usage](#usage)
+- [Documentation](#documentation)
 - [Project Status](#project-status)
-- [Contact](#contact)
+- [](#)
 
 <a name="general-information"></a>
 
@@ -73,7 +74,11 @@ make createdb
 make server
 ```
 
-<a name="project-status">
+<a name="documentation"> </a>
+## Documentation
+[postman collection](docs\jurusanKu.postman_collection.json)
+
+<a name="project-status"> </a>
 
 ## Project Status
 Project is: _on development_
