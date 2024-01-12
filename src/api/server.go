@@ -26,9 +26,16 @@ func NewServer(store db.Store, runtime_config config.Config) (*Server, error) {
 	authRoutes := router.Group("/").Use(middleware.Auth(runtime_config.JWT_KEY))
 
 	authRoutes.POST("/dummy/create/major", server.createDummyMajor)
+	
 	authRoutes.GET("/majors", server.getAllMajors)
-
 	authRoutes.GET("/course/:majorId", server.getCourseByMajorId)
+	authRoutes.GET("/course/active/:email", server.GetActiveCourse)
+
+	authRoutes.GET("/course/syllabus/:courseId", server.getSyllabusByCourseId)
+	authRoutes.GET("/course/project/:courseId", server.getProjectByCourseId)
+	authRoutes.GET("/course/material/:courseId", server.getMaterialByCourseId)
+	
+	authRoutes.POST("/enroll", server.enroll)
 
 	server.router = router
 	return server, nil

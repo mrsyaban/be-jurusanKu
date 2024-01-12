@@ -1,11 +1,14 @@
--- name: CreateMajor :one
+-- name: CreateDummyMajor :many
 INSERT INTO majors (
     title,
-    "desc"
+    "desc",
+    "interest_num"
 ) VALUES (
-    'Computer Science',
-    'The study of computers and their applications'
+    'Teknik Informatika',
+    'The study of computers and their applications',
+    1100
 ) RETURNING *;
+
 
 -- name: GetMajors :many
 SELECT * FROM majors;

@@ -10,15 +10,15 @@ import (
 
 type Payload struct {
 	ID 		 uuid.UUID `json:"id"`
-	Username string    `json:"username"`
+	Email	 string    `json:"email"`
 	Role     string    `json:"role"`
 	IssuedAt time.Time `json:"issued_at"`
 	Exp      time.Time `json:"expired_at"`
 }
 
-func CreateToken(username string, role string, duration time.Duration, key string) (string, *Payload, error) {
+func CreateToken(email string, role string, duration time.Duration, key string) (string, *Payload, error) {
 	payload := &Payload{
-		Username: username,
+		Email: email,
 		Role:     role,
 		IssuedAt: time.Now(),
 		Exp:      time.Now().Add(duration),
@@ -60,4 +60,12 @@ func VerifyToken(token string, key string) (*Payload, error) {
 	}
 
 	return payload, nil
+}
+
+func GetUserEmailByToken(token string, key string) (string, error) {
+	payload, err := VerifyToken(token, key)
+	if err != nil {
+		return "", err
+	}
+	return payload.Email, nil
 }

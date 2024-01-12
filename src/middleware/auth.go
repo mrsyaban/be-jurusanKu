@@ -5,10 +5,12 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	
 )
 
 const (
 	authorizationPayloadKey = "authorization_payload"
+	courseAuthorizationKey = "course_authorization"
 )
 
 // AuthMiddleware creates a gin middleware for authorization
@@ -30,3 +32,4 @@ func Auth(key string) gin.HandlerFunc {
 		ctx.Next()
 	}
 }
+
