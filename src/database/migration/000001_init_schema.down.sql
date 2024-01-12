@@ -2,7 +2,7 @@ ALTER TABLE "material" DROP CONSTRAINT "material_course_id_fkey";
 
 ALTER TABLE "projects" DROP CONSTRAINT "projects_course_id_fkey";
 
-ALTER TABLE "enrollment" DROP CONSTRAINT "enrollment_user_id_fkey";
+ALTER TABLE "enrollment" DROP CONSTRAINT "enrollment_user_email_fkey";
 
 ALTER TABLE "enrollment" DROP CONSTRAINT "enrollment_course_id_fkey";
 

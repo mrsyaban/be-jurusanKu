@@ -9,8 +9,32 @@ import (
 	"context"
 )
 
+const createDummyProject = `-- name: CreateDummyProject :one
+INSERT INTO projects (
+    course_id,
+    image_url,
+    content_url
+) VALUES (
+    1,
+    'https://sample.dummy',
+    'https://sample.dummy'
+) RETURNING id, course_id, image_url, content_url
+`
+
+func (q *Queries) CreateDummyProject(ctx context.Context) (Projects, error) {
+	row := q.db.QueryRowContext(ctx, createDummyProject)
+	var i Projects
+	err := row.Scan(
+		&i.ID,
+		&i.CourseID,
+		&i.ImageUrl,
+		&i.ContentUrl,
+	)
+	return i, err
+}
+
 const getProjectByCourseId = `-- name: GetProjectByCourseId :many
-SELECT id, course_id 
+SELECT id, course_id, image_url, content_url 
 FROM projects 
 WHERE course_id = $1
 `
@@ -24,7 +48,12 @@ func (q *Queries) GetProjectByCourseId(ctx context.Context, courseID int64) ([]P
 	var items []Projects
 	for rows.Next() {
 		var i Projects
-		if err := rows.Scan(&i.ID, &i.CourseID); err != nil {
+		if err := rows.Scan(
+			&i.ID,
+			&i.CourseID,
+			&i.ImageUrl,
+			&i.ContentUrl,
+		); err != nil {
 			return nil, err
 		}
 		items = append(items, i)

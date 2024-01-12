@@ -21,12 +21,13 @@ type AptitudeTest struct {
 }
 
 type Courses struct {
-	ID       int64          `json:"id"`
-	Title    string         `json:"title"`
-	Desc     string         `json:"desc"`
-	MajorID  int64          `json:"major_id"`
-	Price    sql.NullInt32  `json:"price"`
-	Syllabus sql.NullString `json:"syllabus"`
+	ID       int64  `json:"id"`
+	Title    string `json:"title"`
+	Desc     string `json:"desc"`
+	MajorID  int64  `json:"major_id"`
+	ImageUrl string `json:"image_url"`
+	Price    int32  `json:"price"`
+	Syllabus string `json:"syllabus"`
 }
 
 type CoursesMajors struct {
@@ -43,6 +44,7 @@ type Majors struct {
 	ID          int64  `json:"id"`
 	Title       string `json:"title"`
 	Desc        string `json:"desc"`
+	ImageUrl    string `json:"image_url"`
 	InterestNum int32  `json:"interest_num"`
 }
 
@@ -55,8 +57,10 @@ type Material struct {
 }
 
 type Projects struct {
-	ID       int64 `json:"id"`
-	CourseID int64 `json:"course_id"`
+	ID         int64  `json:"id"`
+	CourseID   int64  `json:"course_id"`
+	ImageUrl   string `json:"image_url"`
+	ContentUrl string `json:"content_url"`
 }
 
 type Recommendation struct {
