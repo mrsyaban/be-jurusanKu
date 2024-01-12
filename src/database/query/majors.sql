@@ -2,11 +2,13 @@
 INSERT INTO majors (
     title,
     "desc",
-    "interest_num"
+    "interest_num",
+    image_url
 ) VALUES (
     'Teknik Informatika',
     'The study of computers and their applications',
-    1100
+    1100,
+    'https://sample.dummy'
 ) RETURNING *;
 
 

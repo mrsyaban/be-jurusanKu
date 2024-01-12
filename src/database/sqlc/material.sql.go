@@ -9,6 +9,33 @@ import (
 	"context"
 )
 
+const createDummyMaterial = `-- name: CreateDummyMaterial :one
+INSERT INTO material (
+    type,
+    title,
+    content_url,
+    course_id
+) VALUES (
+    'video',
+    'Introduction to Computer Science',
+    'https://sample.dummy',
+    1
+) RETURNING id, type, title, content_url, course_id
+`
+
+func (q *Queries) CreateDummyMaterial(ctx context.Context) (Material, error) {
+	row := q.db.QueryRowContext(ctx, createDummyMaterial)
+	var i Material
+	err := row.Scan(
+		&i.ID,
+		&i.Type,
+		&i.Title,
+		&i.ContentUrl,
+		&i.CourseID,
+	)
+	return i, err
+}
+
 const getMaterialByCourseId = `-- name: GetMaterialByCourseId :one
 SELECT id, type, title, content_url, course_id 
 FROM material 

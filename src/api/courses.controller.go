@@ -34,7 +34,7 @@ func (server *Server) VerifyEnrollment(key string, ctx *gin.Context, courseId in
 }	
 
 type getCourseByMajorIdRequest struct {
-	MajorId int64 `uri:"majorId" binding:"required, min=1"`
+	MajorId int64 `uri:"majorId" binding:"required"`
 }
 
 func (server *Server) getCourseByMajorId(ctx *gin.Context) {
@@ -56,7 +56,7 @@ func (server *Server) getCourseByMajorId(ctx *gin.Context) {
 }
 
 type getSyllabusRequest struct {
-	CourseID int64 `uri:"majorId" binding:"required, min=1"`
+	CourseID int64 `uri:"courseId" binding:"required"`
 }
 
 func (server *Server) getSyllabusByCourseId(ctx *gin.Context) {
@@ -87,12 +87,12 @@ func (server *Server) getSyllabusByCourseId(ctx *gin.Context) {
 }
 
 type getMaterialByCourseIdRequest  struct {
-	CourseID int64 `uri:"id" binding:"required,min=1"`
+	CourseID int64 `uri:"courseId" binding:"required"`
 }
 
 func (server *Server) getMaterialByCourseId(ctx *gin.Context) {
 	var req getMaterialByCourseIdRequest
-	if err := ctx.ShouldBind(&req); err != nil {
+	if err := ctx.ShouldBindUri(&req); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -111,12 +111,12 @@ func (server *Server) getMaterialByCourseId(ctx *gin.Context) {
 }
 
 type getProjectByCourseIdRequest struct {
-	CourseID int64 `uri:"id" binding:"required,min=1"`
+	CourseID int64 `uri:"courseId" binding:"required"`
 }
 
 func (server *Server) getProjectByCourseId(ctx *gin.Context) {
 	var req getProjectByCourseIdRequest
-	if err := ctx.ShouldBind(&req); err != nil {
+	if err := ctx.ShouldBindUri(&req); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}

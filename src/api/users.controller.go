@@ -22,7 +22,7 @@ func (server *Server) Register(ctx *gin.Context) {
 	// get request body
 	var req register
 	if err := ctx.ShouldBind(&req); err != nil {
-		ctx.JSON(400, gin.H{"error": err.Error()})
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -62,7 +62,7 @@ func (server *Server) Login(ctx *gin.Context) {
 	// get request body
 	var req login
 	if err := ctx.ShouldBind(&req); err != nil {
-		ctx.JSON(400, gin.H{"error": err.Error()})
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -90,4 +90,50 @@ func (server *Server) Login(ctx *gin.Context) {
 	ctx.SetCookie("token", token, 3600, "/", "localhost", false, true)
 	log.Println(ctx.Cookie("token"))
 	ctx.JSON(http.StatusOK, payload)
+}
+
+type getProfileRequest struct {
+	Email string `form:"email" binding:"required"`
+}
+
+func (server *Server) getProfile(ctx *gin.Context) {
+	var req getProfileRequest
+	if err := ctx.ShouldBind(&req); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	user, err := server.store.GetUserByEmail(ctx, req.Email)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	ctx.JSON(http.StatusOK, user)
+}
+
+type updateProfileRequest struct {
+	Email string `form:"email" binding:"required"`
+	Name string `form:"name" binding:"required"`
+	Nick string `form:"nick" binding:"required"`
+}
+
+func (server *Server) updateProfile(ctx *gin.Context) {
+	var req updateProfileRequest
+	if err := ctx.ShouldBind(&req); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	args := db.UpdateProfileParams{
+		Name: req.Name,
+		Nick: req.Nick,
+		Email: req.Email,
+	}
+
+	user, err := server.store.UpdateProfile(ctx, args)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "failed to update profile"})
+		return
+	}
+	ctx.JSON(http.StatusOK, user)
 }
