@@ -7,7 +7,7 @@ import (
 )
 
 func (server *Server) createDummyMajor(ctx *gin.Context) {
-	major, err := server.store.CreateMajor(ctx)
+	major, err := server.store.CreateDummyMajor(ctx)
 	if err != nil {
 		ctx.JSON(500, gin.H{"error": err.Error()})
 		return

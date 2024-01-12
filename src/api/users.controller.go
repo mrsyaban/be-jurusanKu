@@ -12,9 +12,10 @@ import (
 )
 
 type register struct {
-	Username string `form:"username" binding:"required"`
+	Email string `form:"email" binding:"required"`
 	Password string `form:"password" binding:"required"`
 	Role string `form:"role" binding:"required"`
+	Name string `form:"name" binding:"required"`
 }
 
 func (server *Server) Register(ctx *gin.Context) {
@@ -34,9 +35,10 @@ func (server *Server) Register(ctx *gin.Context) {
 
 	// register user
 	args := db.RegisterUserParams{
-		Username: req.Username,
+		Email: req.Email,
 		Password: string(hashedPassword),
 		Role: req.Role,
+		Name: req.Name,
 	}
 
 	newUser, err := server.store.RegisterUser(ctx, args)
@@ -52,7 +54,7 @@ func (server *Server) Register(ctx *gin.Context) {
 }
 
 type login struct {
-	Username string `form:"username" binding:"required"`
+	Email string `form:"email" binding:"required"`
 	Password string `form:"password" binding:"required"`
 }
 
@@ -65,7 +67,7 @@ func (server *Server) Login(ctx *gin.Context) {
 	}
 
 	// get user
-	user, err := server.store.GetUserByUsername(ctx, req.Username)
+	user, err := server.store.GetUserByEmail(ctx, req.Email)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "invalid username"})
 		return
@@ -79,7 +81,7 @@ func (server *Server) Login(ctx *gin.Context) {
 	}
 
 	// generate token
-	token, payload, err := config.CreateToken(user.Username, user.Role, server.config.JWT_EXP, server.config.JWT_KEY)
+	token, payload, err := config.CreateToken(user.Email, user.Role, server.config.JWT_EXP, server.config.JWT_KEY)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

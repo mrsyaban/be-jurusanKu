@@ -5,26 +5,73 @@
 package database
 
 import (
+	"database/sql"
 	"time"
 )
 
+type AptitudeQuestion struct {
+	ID       int64  `json:"id"`
+	Question string `json:"question"`
+}
+
+type AptitudeTest struct {
+	QuestionID int64  `json:"question_id"`
+	UserID     int64  `json:"user_id"`
+	Answer     string `json:"answer"`
+}
+
 type Courses struct {
-	ID      int64  `json:"id"`
-	Title   string `json:"title"`
-	Desc    string `json:"desc"`
-	MajorID int32  `json:"major_id"`
+	ID       int64          `json:"id"`
+	Title    string         `json:"title"`
+	Desc     string         `json:"desc"`
+	MajorID  int64          `json:"major_id"`
+	Price    sql.NullInt32  `json:"price"`
+	Syllabus sql.NullString `json:"syllabus"`
+}
+
+type CoursesMajors struct {
+	CourseID int64 `json:"course_id"`
+	MajorID  int64 `json:"major_id"`
+}
+
+type Enrollment struct {
+	UserEmail string `json:"user_email"`
+	CourseID  int64  `json:"course_id"`
 }
 
 type Majors struct {
-	ID    int64  `json:"id"`
-	Title string `json:"title"`
-	Desc  string `json:"desc"`
+	ID          int64  `json:"id"`
+	Title       string `json:"title"`
+	Desc        string `json:"desc"`
+	InterestNum int32  `json:"interest_num"`
+}
+
+type Material struct {
+	ID         int64          `json:"id"`
+	Type       sql.NullString `json:"type"`
+	Title      string         `json:"title"`
+	ContentUrl string         `json:"content_url"`
+	CourseID   int64          `json:"course_id"`
+}
+
+type Projects struct {
+	ID       int64 `json:"id"`
+	CourseID int64 `json:"course_id"`
+}
+
+type Recommendation struct {
+	UserID     int64 `json:"user_id"`
+	MajorID    int64 `json:"major_id"`
+	Percentage int32 `json:"percentage"`
 }
 
 type Users struct {
-	ID        int64     `json:"id"`
-	Username  string    `json:"username"`
-	Password  string    `json:"password"`
-	Role      string    `json:"role"`
-	CreatedAt time.Time `json:"created_at"`
+	ID           int64        `json:"id"`
+	Email        string       `json:"email"`
+	Password     string       `json:"password"`
+	Name         string       `json:"name"`
+	Nick         string       `json:"nick"`
+	Role         string       `json:"role"`
+	CreatedAt    time.Time    `json:"created_at"`
+	LastTestDate sql.NullTime `json:"last_test_date"`
 }

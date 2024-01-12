@@ -11,14 +11,18 @@ import (
 
 const createDummyUser = `-- name: CreateDummyUser :one
 INSERT INTO users (
-    username,
+    email,
     password,
-    role
+    role,
+    name,
+    nick
 ) VALUES (
-    'adminDummy',
+    'jurusanku@gmail.com',
     'password',
-    'admin'
-) RETURNING id, username, password, role, created_at
+    'student',
+    'jurusanku',
+    ''
+) RETURNING id, email, password, name, nick, role, created_at, last_test_date
 `
 
 func (q *Queries) CreateDummyUser(ctx context.Context) (Users, error) {
@@ -26,58 +30,108 @@ func (q *Queries) CreateDummyUser(ctx context.Context) (Users, error) {
 	var i Users
 	err := row.Scan(
 		&i.ID,
-		&i.Username,
+		&i.Email,
 		&i.Password,
+		&i.Name,
+		&i.Nick,
 		&i.Role,
 		&i.CreatedAt,
+		&i.LastTestDate,
 	)
 	return i, err
 }
 
-const getUserByUsername = `-- name: GetUserByUsername :one
-SELECT id, username, password, role, created_at FROM users WHERE username = $1
+const getUserByEmail = `-- name: GetUserByEmail :one
+SELECT id, email, password, name, nick, role, created_at, last_test_date 
+FROM users 
+WHERE email = $1
 `
 
-func (q *Queries) GetUserByUsername(ctx context.Context, username string) (Users, error) {
-	row := q.db.QueryRowContext(ctx, getUserByUsername, username)
+func (q *Queries) GetUserByEmail(ctx context.Context, email string) (Users, error) {
+	row := q.db.QueryRowContext(ctx, getUserByEmail, email)
 	var i Users
 	err := row.Scan(
 		&i.ID,
-		&i.Username,
+		&i.Email,
 		&i.Password,
+		&i.Name,
+		&i.Nick,
 		&i.Role,
 		&i.CreatedAt,
+		&i.LastTestDate,
 	)
 	return i, err
 }
 
 const registerUser = `-- name: RegisterUser :one
 INSERT INTO users (
-    username,
+    email,
     password,
-    role
+    role,
+    name
 ) VALUES (
     $1,
     $2,
-    $3
-) RETURNING id, username, password, role, created_at
+    $3,
+    $4
+) RETURNING id, email, password, name, nick, role, created_at, last_test_date
 `
 
 type RegisterUserParams struct {
-	Username string `json:"username"`
+	Email    string `json:"email"`
 	Password string `json:"password"`
 	Role     string `json:"role"`
+	Name     string `json:"name"`
 }
 
 func (q *Queries) RegisterUser(ctx context.Context, arg RegisterUserParams) (Users, error) {
-	row := q.db.QueryRowContext(ctx, registerUser, arg.Username, arg.Password, arg.Role)
+	row := q.db.QueryRowContext(ctx, registerUser,
+		arg.Email,
+		arg.Password,
+		arg.Role,
+		arg.Name,
+	)
 	var i Users
 	err := row.Scan(
 		&i.ID,
-		&i.Username,
+		&i.Email,
 		&i.Password,
+		&i.Name,
+		&i.Nick,
 		&i.Role,
 		&i.CreatedAt,
+		&i.LastTestDate,
+	)
+	return i, err
+}
+
+const updateProfile = `-- name: UpdateProfile :one
+UPDATE users
+SET
+    name = $1,
+    "nick" = $2
+WHERE email = $3
+RETURNING id, email, password, name, nick, role, created_at, last_test_date
+`
+
+type UpdateProfileParams struct {
+	Name  string `json:"name"`
+	Nick  string `json:"nick"`
+	Email string `json:"email"`
+}
+
+func (q *Queries) UpdateProfile(ctx context.Context, arg UpdateProfileParams) (Users, error) {
+	row := q.db.QueryRowContext(ctx, updateProfile, arg.Name, arg.Nick, arg.Email)
+	var i Users
+	err := row.Scan(
+		&i.ID,
+		&i.Email,
+		&i.Password,
+		&i.Name,
+		&i.Nick,
+		&i.Role,
+		&i.CreatedAt,
+		&i.LastTestDate,
 	)
 	return i, err
 }

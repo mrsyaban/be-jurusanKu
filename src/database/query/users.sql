@@ -1,24 +1,40 @@
 -- name: CreateDummyUser :one
 INSERT INTO users (
-    username,
+    email,
     password,
-    role
+    role,
+    name,
+    nick
 ) VALUES (
-    'adminDummy',
+    'jurusanku@gmail.com',
     'password',
-    'admin'
+    'student',
+    'jurusanku',
+    ''
 ) RETURNING *;
 
 -- name: RegisterUser :one
 INSERT INTO users (
-    username,
+    email,
     password,
-    role
+    role,
+    name
 ) VALUES (
-    @username,
+    @email,
     @password,
-    @role
+    @role,
+    @name
 ) RETURNING *;
 
--- name: GetUserByUsername :one
-SELECT * FROM users WHERE username = @username;
+-- name: GetUserByEmail :one
+SELECT * 
+FROM users 
+WHERE email = @email;
+
+-- name: UpdateProfile :one
+UPDATE users
+SET
+    name = @name,
+    "nick" = @nick
+WHERE email = @email
+RETURNING *;
