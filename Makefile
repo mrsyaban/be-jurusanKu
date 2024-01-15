@@ -8,10 +8,10 @@ dropdb:
 	docker exec -it db-jurusanku dropdb jurusanKu
 
 migrateup:
-	migrate -path src/database/migration -database "postgresql://root:secret@localhost:5555/jurusanKu?sslmode=disable" -verbose up
+	migrate -path src/database/migration -database "postgresql://admin:rakuten@34.128.80.197:5432/db_jurusanku" -verbose up
 
 migratedown:
-	migrate -path src/database/migration -database "postgresql://root:secret@localhost:5555/jurusanKu?sslmode=disable" -verbose down
+	migrate -path src/database/migration -database "postgresql://admin:rakuten@34.128.80.197:5432/db_jurusanku" -verbose down
 
 sqlc:
 	sqlc generate
