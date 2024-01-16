@@ -15,4 +15,3 @@ steps:
 # Store images in Google Artifact Registry 
 images:
   - asia-southeast1-docker.pkg.dev/jurusanku-410808/server-jurusanku-repo/server-jurusanku:${SHORT_SHA}
-  - asia-southeast1-docker.pkg.dev/jurusanku-410808/server-jurusanku-repo/server-jurusanku:latest
