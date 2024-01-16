@@ -1,0 +1,18 @@
+steps:
+  # Docker Build
+  - name: 'gcr.io/cloud-builders/docker'
+    args: [
+            'build',
+            '-t',
+            'asia-southeast1-docker.pkg.dev/jurusanku-410808/server-jurusanku-repo/server-jurusanku:${SHORT_SHA}',
+            '.'
+          ]
+
+  # Docker push to Google Artifact Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push',  'asia-southeast1-docker.pkg.dev/jurusanku-410808/server-jurusanku-repo/server-jurusanku:${SHORT_SHA}']
+
+# Store images in Google Artifact Registry 
+images:
+  - asia-southeast1-docker.pkg.dev/jurusanku-410808/server-jurusanku-repo/server-jurusanku:${SHORT_SHA}
+  - asia-southeast1-docker.pkg.dev/jurusanku-410808/server-jurusanku-repo/server-jurusanku:latest
