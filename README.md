@@ -9,6 +9,7 @@
   <img src="https://img.shields.io/badge/-Go-333333?style=flat-square&logo=Go">
   <img src="https://img.shields.io/badge/-Docker-333333?style=flat-square&logo=docker"/>
   <img src="https://img.shields.io/badge/-PostgreSQL-333333?style=flat-square&logo=postgresql">
+  <img src="https://img.shields.io/badge/-Google%20Cloud%20Platform-333333?style=flat-square&logo=google-cloud">
 </p>
 
 ## Table of Contents
@@ -61,17 +62,12 @@ go get
 
 ## Usage
 You can run the server by using the command below.
+1. Install docker to your device
+2. request `.env` files from Rakuten team 
+3. run:
 
 ```bash
-make db
-```
-
-```bash
-make createdb
-```
-
-```bash
-make server
+docker compose up --build
 ```
 
 <a name="documentation"> </a>
